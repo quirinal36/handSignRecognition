@@ -1,0 +1,70 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+.history/
+
+# Local agent / tooling configs (per-user, not for the repo)
+.claude/
+
+# Secrets / env
+.env
+.env.*
+!.env.example
+
+# Project artifacts — datasets & checkpoints
+data/raw/                 # 수집된 webcam clip — 절대 commit 금지 (용량/개인정보)
+data/processed/           # landmark NPZ / RGB crop tensor cache
+data/interim/             # 중간 산출물
+runs/                     # 실험 산출물 (checkpoint, logs, eval_report)
+*.pt
+*.pth
+*.onnx
+*.npy
+*.npz
+*.h5
+
+# MediaPipe model assets (재다운로드 가능: scripts/download_models.py)
+models_assets/
+*.task
+
+# Video / image dumps
+*.mp4
+*.avi
+*.mov
+*.webm
+*.mkv
+
+# Logging
+events.out.tfevents.*
+wandb/
+lightning_logs/
+tensorboard/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Test / lint caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Temp / cache
+*.log
+.cache/

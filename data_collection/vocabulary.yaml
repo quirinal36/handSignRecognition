@@ -1,0 +1,16 @@
+# KSL Vocabulary — placeholder
+# IMPLEMENTATION_PLAN.md §12.1: 10개 단어/자모는 추후 결정.
+# 결정되면 'class_N: <Korean label>' 형태로 교체. 라벨 인덱스(0..9)는 학습 후 변경 금지.
+
+version: 0
+classes:
+  0: class_0
+  1: class_1
+  2: class_2
+  3: class_3
+  4: class_4
+  5: class_5
+  6: class_6
+  7: class_7
+  8: class_8
+  9: class_9
