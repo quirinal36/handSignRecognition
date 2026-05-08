@@ -26,13 +26,25 @@ from mediapipe.tasks.python import vision as mp_vision
 
 
 # ──────────────────────────────────────────────────────────
-# Face-mesh subset (FACE_OVAL ∪ LIPS ∪ LEFT_EYEBROW ∪ RIGHT_EYEBROW)
+# Face-mesh subset (FACE_OVAL ∪ LIPS ∪ LEFT_EYEBROW ∪ RIGHT_EYEBROW + nose tip)
 #
 # Indices come from the Tasks-API constant
 # `mp.tasks.python.vision.FaceLandmarksConnections`. Each entry is a
 # Connection(start=int, end=int) namedtuple-like; we union the endpoint
-# indices of the four chosen contour groups.
+# indices of the four chosen contour groups, plus landmark 1 (nose tip)
+# explicitly so that face normalization can use a nose-relative origin
+# (per IMPLEMENTATION_PLAN §5.1).
 # ──────────────────────────────────────────────────────────
+# Reference landmarks used by data/normalizer.py (canonical MediaPipe
+# Face Mesh indices, BEFORE subsetting):
+#   1   — nose tip            (origin for face normalization)
+#   61  — left mouth corner   (paired with 291 for scale)
+#   291 — right mouth corner
+_FACE_NOSE_TIP_RAW: int = 1
+_FACE_MOUTH_LEFT_RAW: int = 61
+_FACE_MOUTH_RIGHT_RAW: int = 291
+
+
 def _connection_indices(connections: Iterable) -> set[int]:
     out: set[int] = set()
     for c in connections:
@@ -47,10 +59,18 @@ FACE_SUBSET_INDICES: list[int] = sorted(
     | _connection_indices(_FLC.FACE_LANDMARKS_LIPS)
     | _connection_indices(_FLC.FACE_LANDMARKS_LEFT_EYEBROW)
     | _connection_indices(_FLC.FACE_LANDMARKS_RIGHT_EYEBROW)
+    | {_FACE_NOSE_TIP_RAW}
 )
 NUM_FACE_LANDMARKS: int = len(FACE_SUBSET_INDICES)
 NUM_HAND_LANDMARKS: int = 21
 NUM_HANDS: int = 2
+
+# Positions of normalization-reference landmarks within the (NUM_FACE_LANDMARKS,)
+# subset array. data/normalizer.py uses these instead of the raw MediaPipe
+# indices, since the recorder only stores the subset on disk.
+FACE_NOSE_TIP_IDX: int = FACE_SUBSET_INDICES.index(_FACE_NOSE_TIP_RAW)
+FACE_MOUTH_LEFT_IDX: int = FACE_SUBSET_INDICES.index(_FACE_MOUTH_LEFT_RAW)
+FACE_MOUTH_RIGHT_IDX: int = FACE_SUBSET_INDICES.index(_FACE_MOUTH_RIGHT_RAW)
 
 # Slot convention: slot 0 = Left hand, slot 1 = Right hand (per MediaPipe handedness label).
 _HANDEDNESS_TO_SLOT = {"Left": 0, "Right": 1}

@@ -8,6 +8,7 @@ einops>=0.7
 ptflops>=0.7
 tensorboard>=2.14
 tqdm>=4.66
+pillow>=10.0                    # Korean text rendering in recorder GUI overlay
 
 # Dev / visualization (optional)
 matplotlib>=3.7

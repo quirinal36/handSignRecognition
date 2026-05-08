@@ -34,7 +34,7 @@ input:
     crop_size: 64
     crop_margin: 0.25
   face:
-    num_landmarks: 96                 # FACE_OVAL + LIPS + L/R EYEBROW (Phase 1 확정값; data_collection.mediapipe_runner.NUM_FACE_LANDMARKS)
+    num_landmarks: 97                 # FACE_OVAL + LIPS + L/R EYEBROW + nose tip (data_collection.mediapipe_runner.NUM_FACE_LANDMARKS)
     coord_dims: 3
     crop_size: 64
     crop_margin: 0.15
@@ -99,16 +99,16 @@ model:
     transformer:
       heads: 4
       mlp_ratio: 2
-  per_frame_fusion_dim: 256
+  per_frame_fusion_dim: 192           # plan §6.3 옵션 A: 256→192 (param budget 조정)
   temporal:
-    dim: 256
+    dim: 192                          # = per_frame_fusion_dim (kslr_net이 fusion_dim을 사용; 이 값은 informational)
     depth: 2
-    heads: 4
+    heads: 4                          # 192 % 4 == 0
     mlp_ratio: 2
     dropout: 0.1
     pos_embed: sinusoidal             # 부족 시 'learned'로 교체
   irffn:
-    hidden_dim: 1024                  # expansion 4×
+    hidden_dim: 576                   # plan §6.3 옵션 B: 4×→3× (192*3=576)
     dropout: 0.1
   classifier:
     out_dim: 10                       # = num_classes
